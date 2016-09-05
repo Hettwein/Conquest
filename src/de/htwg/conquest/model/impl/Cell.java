@@ -56,5 +56,23 @@ public class Cell implements ICell {
 	public int getY() {
 		return y;
 	}
+	
+	@Override
+	public String getColorText() {
+		Color c = color;
+		String co = "";
+		if(c.equals(Color.BLUE)) {
+			co = "blue";
+		} else if(c.equals(Color.GREEN)) {
+			co = "green";
+		} else if(c.equals(Color.RED)) {
+			co = "red";
+		} else if(c.equals(Color.YELLOW)) {
+			co = "yellow";
+		} else if(c.equals(Color.ORANGE)) {
+			co = "orange";
+		}
+		return co;
+	}
 
 }

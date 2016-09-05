@@ -1,6 +1,7 @@
 package de.htwg.conquest;
 
 import java.util.Observable;
+import java.util.Scanner;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -32,7 +33,13 @@ public class Conquest extends Observable{
 	}
 
 	public static void main(String[] args) {
-		Conquest.getInstance().controller.newGame();
+		Conquest game = Conquest.getInstance();
+		game.controller.newGame();
+		Scanner in = new Scanner(System.in);
+		while(game.getTui().isRunning()) {
+			game.getTui().processInput(in.nextLine());
+		}
+		in.close();
 		
 	}
 

@@ -11,4 +11,5 @@ public interface ICell {
 	boolean isOwned();
 	int getX();
 	int getY();
+	String getColorText();
 }
