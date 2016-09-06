@@ -45,12 +45,12 @@ public class GameField implements IGameField {
 		cells[x][y].setColor(color);
 	}
 
-	@Override
+	@Override///////////////////
 	public int getSize() {
 		return size;
 	}
 
-	@Override
+	@Override//////////////////
 	public void setSize(int size) {
 		this.size = size;
 	}

@@ -34,13 +34,13 @@ public class Conquest extends Observable{
 
 	public static void main(String[] args) {
 		Conquest game = Conquest.getInstance();
+		game.getTui().startGame();
 		game.controller.newGame();
 		Scanner in = new Scanner(System.in);
 		while(game.getTui().isRunning()) {
 			game.getTui().processInput(in.nextLine());
 		}
 		in.close();
-		
 	}
 
     public Injector getIn() {

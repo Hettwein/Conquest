@@ -16,4 +16,7 @@ public interface IController extends IObservable {
 	void newRound();
 	IPlayer getCurrentPlayer();
 	IGameField getField();
+	int getSize();
+	void setSize(int size);
+	IPlayer announceWinner();
 }
