@@ -13,7 +13,7 @@ public class Cell implements ICell {
 	private int x;
 	private int y;
 	
-	private static final Color[] COLORS = new Color[] {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.ORANGE};
+	private static final Color[] COLORS = new Color[] {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA};
 
 	public Cell(int num, int x, int y) {
 		Random r = new Random();
@@ -69,8 +69,8 @@ public class Cell implements ICell {
 			co = "red";
 		} else if(c.equals(Color.YELLOW)) {
 			co = "yellow";
-		} else if(c.equals(Color.ORANGE)) {
-			co = "orange";
+		} else if(c.equals(Color.MAGENTA)) {
+			co = "magenta";
 		}
 		return co;
 	}
