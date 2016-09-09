@@ -15,6 +15,12 @@ import de.htwg.conquest.model.IPlayer;
 import de.htwg.conquest.model.impl.GameField;
 import de.htwg.conquest.util.observer.impl.Observerable;
 
+/*ideen:
+ * -"landschaft", hindernisse (leere felder)
+ * -gui gestaltung
+ * 
+ * 
+*/
 @Singleton
 public class Controller extends Observerable implements IController {
 
@@ -22,6 +28,7 @@ public class Controller extends Observerable implements IController {
 	private IPlayer currentPlayer;
 	private IGameField field;
 	private List<ICell> newCells;
+	private int freeCells;
 	private int turn;
 	private int size;
 
@@ -69,24 +76,28 @@ public class Controller extends Observerable implements IController {
 		if (newCell != null && !newCell.isOwned() && newCell.getColor().equals(color)) {
 			newCell.setOwner(currentPlayer);
 			newCells.add(newCell);
+			freeCells--;
 			checkColor(color, field.getCell(newCell.getX(), newCell.getY()));
 		}
 		newCell = field.getCell(cell.getX() - 1, cell.getY());
 		if (newCell != null && !newCell.isOwned() && newCell.getColor().equals(color)) {
 			newCell.setOwner(currentPlayer);
 			newCells.add(newCell);
+			freeCells--;
 			checkColor(color, field.getCell(newCell.getX(), newCell.getY()));
 		}
 		newCell = field.getCell(cell.getX(), cell.getY() + 1);
 		if (newCell != null && !newCell.isOwned() && newCell.getColor().equals(color)) {
 			newCell.setOwner(currentPlayer);
 			newCells.add(newCell);
+			freeCells--;
 			checkColor(color, field.getCell(newCell.getX(), newCell.getY()));
 		}
 		newCell = field.getCell(cell.getX(), cell.getY() - 1);
 		if (newCell != null && !newCell.isOwned() && newCell.getColor().equals(color)) {
 			newCell.setOwner(currentPlayer);
 			newCells.add(newCell);
+			freeCells--;
 			checkColor(color, field.getCell(newCell.getX(), newCell.getY()));
 		}
 	}
@@ -98,15 +109,15 @@ public class Controller extends Observerable implements IController {
 
 		for (IPlayer player : players) {
 			Random r = new Random();
-			conquest(player, r.nextInt(size), r.nextInt(size));
+			conquest(player, field.getCell(r.nextInt(size), r.nextInt(size)));
 		}
 		notifyObservers();
 	}
 
-	private void conquest(IPlayer player, int x, int y) {
-		System.out.println(x + " " + y);
-		field.setOwner(x, y, player);
-		player.addCell(field.getCell(x, y));
+	private void conquest(IPlayer player, ICell cell) {
+		field.setOwner(cell.getX(), cell.getY(), player);
+		player.addCell(cell);
+		freeCells--;
 	}
 
 	@Override
@@ -134,6 +145,7 @@ public class Controller extends Observerable implements IController {
 	public void setSize(int size) {
 		this.size = size;
 		field = new GameField(size);
+		freeCells = size * size;
 	}
 
 	@Override
@@ -147,5 +159,15 @@ public class Controller extends Observerable implements IController {
 			}
 		}
 		return winner;
+	}
+
+	@Override
+	public List<ICell> getNewCells() {
+		return newCells;
+	}
+
+	@Override
+	public int getFreeCells() {
+		return freeCells;
 	}
 }

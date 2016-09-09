@@ -15,6 +15,7 @@ public class Conquest extends Observable{
 	private static Conquest instance = null;
 
 	private TUI tui;
+	private GUI gui;
 	private Injector injector;
 	private IController controller;
 
@@ -28,27 +29,32 @@ public class Conquest extends Observable{
 	private Conquest() {
 		Injector injector = Guice.createInjector(new ConquestModule());
 		controller = injector.getInstance(IController.class);
-		injector.getInstance(GUI.class);
+		gui = injector.getInstance(GUI.class);
 		tui = injector.getInstance(TUI.class);
 	}
 
 	public static void main(String[] args) {
 		Conquest game = Conquest.getInstance();
-		game.getTui().startGame();
+//		game.getTui().startGame();
+		game.getGui().startGame();
 		game.controller.newGame();
-		Scanner in = new Scanner(System.in);
-		while(game.getTui().isRunning()) {
-			game.getTui().processInput(in.nextLine());
-		}
-		in.close();
+//		Scanner in = new Scanner(System.in);
+//		while(game.getTui().isRunning()) {
+//			game.getTui().processInput(in.nextLine());
+//		}
+//		in.close();
 	}
 
-    public Injector getIn() {
+    public Injector getInjector() {
         return injector;
     }
 
 	public TUI getTui() {
 		return tui;
+	}
+
+	public GUI getGui() {
+		return gui;
 	}
 	
 	public IController getController() {

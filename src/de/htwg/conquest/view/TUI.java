@@ -27,6 +27,7 @@ public class TUI implements IObserver {
 	public void startGame() {
 		System.out.println("Welcome to Conquest!");
 		System.out.println("Please enter your name:");
+		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		while(true) {
 			String input = in.nextLine();
@@ -74,13 +75,11 @@ public class TUI implements IObserver {
 
 	public String status() {
 		StringBuilder s = new StringBuilder();
-		int freeCells = controller.getSize() * controller.getSize();
 		for(IPlayer player : controller.getPlayers()) {
-			freeCells -= player.getCellCount();
 			s.append(player.getName() + ": " + player.getCellCount() + "\n");
 		}
-		s.append("\nFree cells: " + freeCells + "\n");
-		if(freeCells == 0) {
+		s.append("\nFree cells: " + controller.getFreeCells() + "\n");
+		if(controller.getFreeCells() == 0) {//in den controller
 			System.out.println("Congratulations " + controller.announceWinner().getName() + ", you have won!\n");
 		}
 		return s.toString();
