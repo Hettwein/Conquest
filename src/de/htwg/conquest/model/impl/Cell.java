@@ -71,6 +71,8 @@ public class Cell implements ICell {
 			co = "yellow";
 		} else if(c.equals(Color.MAGENTA)) {
 			co = "magenta";
+		} else {
+			co = " ";
 		}
 		return co;
 	}

@@ -22,4 +22,5 @@ public interface IController extends IObservable {
 	IPlayer announceWinner();
 	List<ICell> getNewCells();
 	int getFreeCells();
+	void loadLevel(String filename);
 }

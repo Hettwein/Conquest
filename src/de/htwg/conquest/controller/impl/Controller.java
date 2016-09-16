@@ -1,9 +1,14 @@
 package de.htwg.conquest.controller.impl;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -13,12 +18,13 @@ import de.htwg.conquest.model.ICell;
 import de.htwg.conquest.model.IGameField;
 import de.htwg.conquest.model.IPlayer;
 import de.htwg.conquest.model.impl.GameField;
+import de.htwg.conquest.model.impl.Player;
 import de.htwg.conquest.util.observer.impl.Observerable;
 
 /*ideen:
  * -"landschaft", hindernisse (leere felder)
  * -gui gestaltung
- * 
+ * -bessere start verteilung (+bug?)
  * 
 */
 @Singleton
@@ -109,7 +115,13 @@ public class Controller extends Observerable implements IController {
 
 		for (IPlayer player : players) {
 			Random r = new Random();
-			conquest(player, field.getCell(r.nextInt(size), r.nextInt(size)));
+			int x = r.nextInt(size);
+			int y = r.nextInt(size);
+			while(field.getCell(x, y).isOwned()) {
+				x = r.nextInt(size);
+				y = r.nextInt(size);
+			}
+			conquest(player, field.getCell(x, y));
 		}
 		notifyObservers();
 	}
@@ -143,9 +155,14 @@ public class Controller extends Observerable implements IController {
 
 	@Override
 	public void setSize(int size) {
-		this.size = size;
-		field = new GameField(size);
-		freeCells = size * size;
+		if(size == 25) {
+			freeCells = size * size;
+			loadLevel("level1.png");
+		} else {
+			this.size = size;
+			field = new GameField(size);
+			freeCells = size * size;
+		}
 	}
 
 	@Override
@@ -153,7 +170,7 @@ public class Controller extends Observerable implements IController {
 		int max = 0;
 		IPlayer winner = null;
 		for (IPlayer player : players) {
-			if(player.getCellCount() > max) {
+			if (player.getCellCount() > max) {
 				max = player.getCellCount();
 				winner = player;
 			}
@@ -169,5 +186,29 @@ public class Controller extends Observerable implements IController {
 	@Override
 	public int getFreeCells() {
 		return freeCells;
+	}
+
+	@Override
+	public void loadLevel(String filename) {
+		BufferedImage image;
+		try {
+			image = ImageIO.read(new File("./resources/" + filename));
+			size = image.getWidth();
+			field = new GameField(size);
+
+			for (int x = 0; x < size; x++) {
+				for (int y = 0; y < size; y++) {
+					int color = image.getRGB(x, y);
+					if (color == Color.BLACK.getRGB()) {
+						field.getCell(x, y).setOwner(new Player(" "));
+						field.getCell(x, y).setColor(Color.BLACK);
+						freeCells--;
+					}
+				}
+			}
+		} catch (IOException e) {
+			System.err.println("Error while reading file " + filename);
+			e.printStackTrace();
+		}
 	}
 }
