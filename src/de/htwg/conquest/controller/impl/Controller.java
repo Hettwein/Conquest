@@ -22,9 +22,14 @@ import de.htwg.conquest.model.impl.Player;
 import de.htwg.conquest.util.observer.impl.Observerable;
 
 /*ideen:
- * -"landschaft", hindernisse (leere felder)
+ * -"landschaft", hindernisse (leere felder) #
  * -gui gestaltung
- * -bessere start verteilung (+bug?)
+ * -bessere start verteilung (+bug? #)
+ * -evtl feste startpositionen?
+ * -counter für single player
+ * -erkennen wenn jmd nicht mehr kann #
+ * -andere spielmodi ?
+ * -items ?
  * 
 */
 @Singleton
@@ -65,13 +70,20 @@ public class Controller extends Observerable implements IController {
 		for (ICell cell : newCells) {
 			currentPlayer.addCell(cell);
 		}
+		changePlayer();
+		while(checkStalemate(currentPlayer) && freeCells > 0) {
+			changePlayer();
+		}
+		notifyObservers();
+		return newCells.size();
+	}
+
+	private void changePlayer() {
 		turn++;
 		if (turn == players.size()) {
 			turn = 0;
 		}
 		currentPlayer = players.get(turn);
-		notifyObservers();
-		return newCells.size();
 	}
 
 	private void checkColor(Color color, ICell cell) {
@@ -106,6 +118,30 @@ public class Controller extends Observerable implements IController {
 			freeCells--;
 			checkColor(color, field.getCell(newCell.getX(), newCell.getY()));
 		}
+	}
+
+	private boolean checkStalemate(IPlayer player) {
+		for(ICell cell : player.getCells()) {
+			int x = cell.getX();
+			int y = cell.getY();
+			ICell c = field.getCell(x + 1, y);
+			if(c != null && !c.isOwned()) {
+				return false;
+			}
+			c = field.getCell(x - 1, y);
+			if(c != null && !c.isOwned()) {
+				return false;
+			}
+			c = field.getCell(x, y - 1);
+			if(c != null && !c.isOwned()) {
+				return false;
+			}
+			c = field.getCell(x, y + 1);
+			if(c != null && !c.isOwned()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -158,6 +194,12 @@ public class Controller extends Observerable implements IController {
 		if(size == 25) {
 			freeCells = size * size;
 			loadLevel("level1.png");
+		} else if(size == 30) {
+				freeCells = size * size;
+				loadLevel("level2.png");
+		} else if(size == 40) {
+				freeCells = size * size;
+				loadLevel("level3.png");
 		} else {
 			this.size = size;
 			field = new GameField(size);

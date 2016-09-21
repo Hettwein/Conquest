@@ -17,6 +17,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -41,6 +44,28 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 	private JButton position;
 
 	private JPanel sidePanel;
+
+	private JPanel colorPanel;
+
+	private JMenuItem newGame;
+
+	private JMenuItem help;
+
+	private JMenuItem exit;
+
+	private JMenuItem newRound;
+
+	private JMenuItem load;
+
+	private JMenuItem save;
+
+	private JMenuItem about;
+
+	private JMenuItem colors;
+
+	private JMenuItem sizes;
+
+	private JMenuItem levels;
 
 	@Inject
 	public GUI(IController controller) {
@@ -128,6 +153,7 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		if(controller.getFreeCells() == 0) {
 			JOptionPane.showMessageDialog(gameField, "Congratulations " + controller.announceWinner().getName() + ", you have won!");
 		}
+		((JLabel) colorPanel.getComponent(0)).setText(controller.getCurrentPlayer().getName());
 	}
 
 	private void init(int size) {
@@ -136,6 +162,40 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		this.setTitle("Conquest");
 		this.setLayout(new BorderLayout());
 
+		// MenuBar
+		JMenuBar menuBar = new JMenuBar();
+		JMenu gameMenu = new JMenu("Game");
+		JMenu optionMenu = new JMenu("Options");
+		JMenu helpMenu = new JMenu("Help");
+		
+		newGame = new JMenuItem("New Game");
+		newRound = new JMenuItem("New Round");
+		load = new JMenuItem("Load");
+		save = new JMenuItem("Save");
+		exit = new JMenuItem("Exit");
+		colors = new JMenuItem("Colors");
+		sizes = new JMenuItem("Size");
+		levels = new JMenuItem("Levels");
+		help = new JMenuItem("How to play");
+		about = new JMenuItem("About");
+
+		menuBar.add(gameMenu);
+		menuBar.add(optionMenu);
+		menuBar.add(helpMenu);
+		
+		gameMenu.add(newGame);
+		gameMenu.add(newRound);
+		gameMenu.add(load);
+		gameMenu.add(save);
+		gameMenu.add(exit);
+		optionMenu.add(colors);
+		optionMenu.add(sizes);
+		optionMenu.add(levels);
+		helpMenu.add(help);
+		helpMenu.add(about);
+
+		this.setJMenuBar(menuBar);
+		
 		// GameField
 		gameField = new JPanel();
 		gameField.setLayout(new GridBagLayout());
@@ -165,9 +225,10 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 			}
 		}
 
-		JPanel colorPanel = new JPanel();
+		colorPanel = new JPanel();
 		colorPanel.setLayout(new FlowLayout());
-		colorPanel.add(new JLabel("Choose a color:"));
+		colorPanel.add(new JLabel(controller.getCurrentPlayer().getName()));
+		colorPanel.add(new JLabel(", please choose a color:"));
 
 		JButton color1 = new JButton();
 		color1.setBackground(Color.RED);
