@@ -170,8 +170,11 @@ public class Controller extends Observerable implements IController {
 
 	@Override
 	public void newRound() {
-		// TODO Auto-generated method stub
-
+		setSize(size);
+		for (IPlayer p : players) {
+			p.getCells().clear();
+		}
+		newGame();
 	}
 
 	@Override

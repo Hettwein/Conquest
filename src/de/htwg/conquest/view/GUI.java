@@ -74,6 +74,17 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 	}
 
 	public void startGame() {
+		controller.getPlayers().clear();
+		cells = null;
+		if(gameField != null) {
+			this.remove(gameField);
+		}
+		if(sidePanel != null) {
+			this.remove(sidePanel);
+		}
+		if(colorPanel != null) {
+			this.remove(colorPanel);
+		}
 		// Players
 		Object[] options = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		Object input = JOptionPane.showInputDialog(null, "Welcome to Conquest!\n\nPlease select the number of players.",
@@ -117,7 +128,7 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		if (input == null) {
 			input = "25";
 		}
-		input = ((String)input).substring(0, 2);
+		input = ((String) input).substring(0, 2);
 		controller.setSize(Integer.parseInt((String) input));
 	}
 
@@ -126,6 +137,8 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		int size = controller.getSize();
 		if (cells == null) {
 			init(size);
+			this.revalidate();
+			this.repaint();
 		}
 		for (int i = 0; i < size; i++) {
 			for (int n = 0; n < size; n++) {
@@ -135,25 +148,31 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 							String.valueOf(controller.getField().getCell(i, n).getOwner().getName().charAt(0)));
 					// cells[i][n].setEnabled(false);
 					cells[i][n].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
+				} else {
+					cells[i][n].setText("");
+					cells[i][n].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 				}
 			}
 		}
-		((JLabel) sidePanel.getComponent(0)).setText("Current: " + controller.getCurrentPlayer().getName());
+		// ((JLabel) sidePanel.getComponent(0)).setText("Current: " +
+		// controller.getCurrentPlayer().getName());
 		for (int i = 0; i < controller.getPlayers().size(); i++) {
 			IPlayer p = controller.getPlayers().get(i);
-			((JLabel) sidePanel.getComponent(i + 1)).setText(p.getName() + ": " + p.getCellCount());
+			((JLabel) sidePanel.getComponent(i)).setText(p.getName() + ": " + p.getCellCount());
 		}
-		((JLabel) sidePanel.getComponent(controller.getPlayers().size() + 1))
+		((JLabel) sidePanel.getComponent(controller.getPlayers().size()))
 				.setText("Free cells: " + controller.getFreeCells());
-		((JLabel) sidePanel.getComponent(controller.getPlayers().size() + 2))
+		((JLabel) sidePanel.getComponent(controller.getPlayers().size() + 1))
 				.setText(controller.getNewCells().size() + " new cells!");
 		for (ICell cell : controller.getNewCells()) {
 			cells[cell.getX()][cell.getY()].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
 		}
-		if(controller.getFreeCells() == 0) {
-			JOptionPane.showMessageDialog(gameField, "Congratulations " + controller.announceWinner().getName() + ", you have won!");
+		if (controller.getFreeCells() == 0) {
+			JOptionPane.showMessageDialog(gameField,
+					"Congratulations " + controller.announceWinner().getName() + ", you have won!");
 		}
-		((JLabel) colorPanel.getComponent(0)).setText(controller.getCurrentPlayer().getName());
+		((JLabel) colorPanel.getComponent(0))
+				.setText(controller.getCurrentPlayer().getName() + ", please choose a color:");
 	}
 
 	private void init(int size) {
@@ -167,22 +186,32 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		JMenu gameMenu = new JMenu("Game");
 		JMenu optionMenu = new JMenu("Options");
 		JMenu helpMenu = new JMenu("Help");
-		
+
 		newGame = new JMenuItem("New Game");
+		newGame.addActionListener(this);
 		newRound = new JMenuItem("New Round");
+		newRound.addActionListener(this);
 		load = new JMenuItem("Load");
+		load.addActionListener(this);
 		save = new JMenuItem("Save");
+		save.addActionListener(this);
 		exit = new JMenuItem("Exit");
+		exit.addActionListener(this);
 		colors = new JMenuItem("Colors");
+		colors.addActionListener(this);
 		sizes = new JMenuItem("Size");
+		sizes.addActionListener(this);
 		levels = new JMenuItem("Levels");
+		levels.addActionListener(this);
 		help = new JMenuItem("How to play");
+		help.addActionListener(this);
 		about = new JMenuItem("About");
+		about.addActionListener(this);
 
 		menuBar.add(gameMenu);
 		menuBar.add(optionMenu);
 		menuBar.add(helpMenu);
-		
+
 		gameMenu.add(newGame);
 		gameMenu.add(newRound);
 		gameMenu.add(load);
@@ -195,7 +224,7 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		helpMenu.add(about);
 
 		this.setJMenuBar(menuBar);
-		
+
 		// GameField
 		gameField = new JPanel();
 		gameField.setLayout(new GridBagLayout());
@@ -227,8 +256,7 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 
 		colorPanel = new JPanel();
 		colorPanel.setLayout(new FlowLayout());
-		colorPanel.add(new JLabel(controller.getCurrentPlayer().getName()));
-		colorPanel.add(new JLabel(", please choose a color:"));
+		colorPanel.add(new JLabel(controller.getCurrentPlayer().getName() + ", please choose a color:"));
 
 		JButton color1 = new JButton();
 		color1.setBackground(Color.RED);
@@ -269,18 +297,19 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		c.ipady = 5;
 		c.weightx = 1;
 
-		c.gridy = 0;
-		sidePanel.add(new JLabel("Current: " + controller.getCurrentPlayer().getName()), c);
+		// c.gridy = 0;
+		// sidePanel.add(new JLabel("Current: " +
+		// controller.getCurrentPlayer().getName()), c);
 
 		for (int i = 0; i < controller.getPlayers().size(); i++) {
-			c.gridy = i + 1;
+			c.gridy = i;
 			sidePanel.add(new JLabel(
 					controller.getPlayers().get(i).getName() + ": " + controller.getPlayers().get(i).getCellCount()),
 					c);
 		}
-		c.gridy = controller.getPlayers().size() + 1;
+		c.gridy = controller.getPlayers().size();
 		sidePanel.add(new JLabel("Free cells: " + controller.getFreeCells()), c);
-		c.gridy = controller.getPlayers().size() + 2;
+		c.gridy = controller.getPlayers().size() + 1;
 		sidePanel.add(new JLabel(controller.getNewCells().size() + " new cells!"), c);
 
 		this.add(gameField, BorderLayout.CENTER);
@@ -295,8 +324,32 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JButton source = (JButton) e.getSource();
-		controller.changeColor(source.getBackground());
+		if (e.getSource() instanceof JButton) {
+			JButton source = (JButton) e.getSource();
+			controller.changeColor(source.getBackground());
+		} else if (e.getSource().equals(newRound)) {
+			controller.newRound();
+		} else if (e.getSource().equals(newGame)) {
+			startGame();
+			controller.newGame();
+		} else if (e.getSource().equals(load)) {
+			System.out.println("load");
+		} else if (e.getSource().equals(save)) {
+			System.out.println("save");
+		} else if (e.getSource().equals(exit)) {
+			System.out.println("exit");
+		} else if (e.getSource().equals(colors)) {
+			System.exit(0);
+		} else if (e.getSource().equals(sizes)) {
+			System.out.println("size");
+		} else if (e.getSource().equals(levels)) {
+			System.out.println("level");
+		} else if (e.getSource().equals(help)) {
+			System.out.println("help");
+		} else if (e.getSource().equals(about)) {
+			System.out.println("about");
+		}
+
 		// switch(source.getName()) {
 		// case "red":
 		// controller.changeColor(source.getBackground());
