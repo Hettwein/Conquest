@@ -1,7 +1,6 @@
 package de.htwg.conquest;
 
 import java.util.Observable;
-import java.util.Scanner;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

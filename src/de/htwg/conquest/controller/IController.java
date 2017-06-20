@@ -23,4 +23,7 @@ public interface IController extends IObservable {
 	List<ICell> getNewCells();
 	int getFreeCells();
 	void loadLevel(String filename);
+	List<Color> getColors();
+	int getColorNum();
+	void setColorNum(int num);
 }

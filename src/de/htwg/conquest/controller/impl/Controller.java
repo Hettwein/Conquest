@@ -19,6 +19,7 @@ import de.htwg.conquest.model.IGameField;
 import de.htwg.conquest.model.IPlayer;
 import de.htwg.conquest.model.impl.GameField;
 import de.htwg.conquest.model.impl.Player;
+import de.htwg.conquest.util.ColorUtil;
 import de.htwg.conquest.util.observer.impl.Observerable;
 
 /*ideen:
@@ -42,6 +43,7 @@ public class Controller extends Observerable implements IController {
 	private int freeCells;
 	private int turn;
 	private int size;
+	private int numberOfColors = 5;
 
 	@Inject
 	public Controller() {
@@ -205,7 +207,7 @@ public class Controller extends Observerable implements IController {
 				loadLevel("level3.png");
 		} else {
 			this.size = size;
-			field = new GameField(size);
+			field = new GameField(size, numberOfColors);
 			freeCells = size * size;
 		}
 	}
@@ -239,7 +241,7 @@ public class Controller extends Observerable implements IController {
 		try {
 			image = ImageIO.read(new File("./resources/" + filename));
 			size = image.getWidth();
-			field = new GameField(size);
+			field = new GameField(size, numberOfColors);
 
 			for (int x = 0; x < size; x++) {
 				for (int y = 0; y < size; y++) {
@@ -255,5 +257,21 @@ public class Controller extends Observerable implements IController {
 			System.err.println("Error while reading file " + filename);
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<Color> getColors() {
+		return ColorUtil.getColorSet(numberOfColors);
+	}
+
+	@Override
+	public int getColorNum() {
+		return numberOfColors;
+	}
+
+	@Override
+	public void setColorNum(int num) {
+		this.numberOfColors = num;
+		field = new GameField(size, numberOfColors);
 	}
 }

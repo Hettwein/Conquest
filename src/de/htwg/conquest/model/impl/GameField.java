@@ -10,14 +10,13 @@ public class GameField implements IGameField {
 
 	private ICell[][] cells;
 	private int size;
-	private int colorNumber;
 	
-	public GameField(int size) {
+	public GameField(int size, int colorNum) {
 		this.size = size;
 		cells = new Cell[size][size];
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
-				cells[i][j] = new Cell(5, i, j);
+				cells[i][j] = new Cell(colorNum, i, j);
 			}
 		}
 	}
@@ -54,15 +53,4 @@ public class GameField implements IGameField {
 	public void setSize(int size) {
 		this.size = size;
 	}
-
-	@Override
-	public int getColorNumber() {
-		return colorNumber;
-	}
-
-	@Override
-	public void setColorNumber(int num) {
-		colorNumber = num;
-	}
-
 }

@@ -43,7 +43,7 @@ public class TUI implements IObserver {
 		System.out.println("Okay, let's go!\n");
 	}
 	
-	public void processInput(String input) {
+	public void processInput(String input) {///////////////////
 		switch(input) {
 			case "red":
 				System.out.println(controller.changeColor(Color.RED) + " new cells");

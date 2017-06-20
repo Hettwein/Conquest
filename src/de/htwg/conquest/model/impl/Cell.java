@@ -5,6 +5,7 @@ import java.util.Random;
 
 import de.htwg.conquest.model.ICell;
 import de.htwg.conquest.model.IPlayer;
+import de.htwg.conquest.util.ColorUtil;
 
 public class Cell implements ICell {
 
@@ -13,11 +14,9 @@ public class Cell implements ICell {
 	private int x;
 	private int y;
 	
-	private static final Color[] COLORS = new Color[] {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA};
-
 	public Cell(int num, int x, int y) {
 		Random r = new Random();
-		this.color = COLORS[r.nextInt(num)];
+		this.color = ColorUtil.getColorSet(num).get(r.nextInt(num));
 		this.x = x;
 		this.y = y;
 	}
@@ -59,22 +58,7 @@ public class Cell implements ICell {
 	
 	@Override
 	public String getColorText() {
-		Color c = color;
-		String co = "";
-		if(c.equals(Color.BLUE)) {
-			co = "blue";
-		} else if(c.equals(Color.GREEN)) {
-			co = "green";
-		} else if(c.equals(Color.RED)) {
-			co = "red";
-		} else if(c.equals(Color.YELLOW)) {
-			co = "yellow";
-		} else if(c.equals(Color.MAGENTA)) {
-			co = "magenta";
-		} else {
-			co = " ";
-		}
-		return co;
+		return ColorUtil.getColorText(color);
 	}
 
 }

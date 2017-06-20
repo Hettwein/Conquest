@@ -29,6 +29,7 @@ import de.htwg.conquest.controller.IController;
 import de.htwg.conquest.model.ICell;
 import de.htwg.conquest.model.IPlayer;
 import de.htwg.conquest.model.impl.Player;
+import de.htwg.conquest.util.ColorUtil;
 import de.htwg.conquest.util.observer.IObserver;
 
 public class GUI extends JFrame implements ActionListener, IObserver {
@@ -86,9 +87,9 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 			this.remove(colorPanel);
 		}
 		// Players
-		Object[] options = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		Object[] players = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		Object input = JOptionPane.showInputDialog(null, "Welcome to Conquest!\n\nPlease select the number of players.",
-				"Conquest", JOptionPane.OK_OPTION, null, options, 2);
+				"Conquest", JOptionPane.OK_OPTION, null, players, 2);
 		if (input == null) {
 			input = 2;
 		}
@@ -120,7 +121,19 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 			names.add(name);
 			controller.addPlayer(new Player(name));
 		}
-
+		
+		// Colors
+		Object[] colors = new Object[ColorUtil.getSize() - 2];
+		for(int i = 0; i < colors.length; i++) {
+			colors[i] = i + 2;
+		}
+		input = JOptionPane.showInputDialog(null, "Please select the number of colors.",
+				"Conquest", JOptionPane.OK_OPTION, null, colors, ColorUtil.getSize());
+		if (input == null) {
+			input = ColorUtil.getSize();
+		}
+		controller.setColorNum((int)input);
+		
 		// Size
 		Object[] sizes = { "10x10", "15x15", "25x25", "30x30", "40x40", "50x50" };
 		input = JOptionPane.showInputDialog(null, "Please select a size for the game field.", "Conquest",
@@ -258,35 +271,43 @@ public class GUI extends JFrame implements ActionListener, IObserver {
 		colorPanel.setLayout(new FlowLayout());
 		colorPanel.add(new JLabel(controller.getCurrentPlayer().getName() + ", please choose a color:"));
 
-		JButton color1 = new JButton();
-		color1.setBackground(Color.RED);
-		color1.setPreferredSize(new Dimension(25, 25));
-		color1.addActionListener(this);
-		colorPanel.add(color1);
-
-		JButton color2 = new JButton();
-		color2.setBackground(Color.BLUE);
-		color2.setPreferredSize(new Dimension(25, 25));
-		color2.addActionListener(this);
-		colorPanel.add(color2);
-
-		JButton color3 = new JButton();
-		color3.setBackground(Color.GREEN);
-		color3.setPreferredSize(new Dimension(25, 25));
-		color3.addActionListener(this);
-		colorPanel.add(color3);
-
-		JButton color4 = new JButton();
-		color4.setBackground(Color.YELLOW);
-		color4.setPreferredSize(new Dimension(25, 25));
-		color4.addActionListener(this);
-		colorPanel.add(color4);
-
-		JButton color5 = new JButton();
-		color5.setBackground(Color.MAGENTA);
-		color5.setPreferredSize(new Dimension(25, 25));
-		color5.addActionListener(this);
-		colorPanel.add(color5);
+		for(Color c : controller.getColors()) {
+			JButton color = new JButton();
+			color.setBackground(c);
+			color.setPreferredSize(new Dimension(25, 25));
+			color.addActionListener(this);
+			colorPanel.add(color);
+		}
+		
+//		JButton color1 = new JButton();
+//		color1.setBackground(Color.RED);
+//		color1.setPreferredSize(new Dimension(25, 25));
+//		color1.addActionListener(this);
+//		colorPanel.add(color1);
+//
+//		JButton color2 = new JButton();
+//		color2.setBackground(Color.BLUE);
+//		color2.setPreferredSize(new Dimension(25, 25));
+//		color2.addActionListener(this);
+//		colorPanel.add(color2);
+//
+//		JButton color3 = new JButton();
+//		color3.setBackground(Color.GREEN);
+//		color3.setPreferredSize(new Dimension(25, 25));
+//		color3.addActionListener(this);
+//		colorPanel.add(color3);
+//
+//		JButton color4 = new JButton();
+//		color4.setBackground(Color.YELLOW);
+//		color4.setPreferredSize(new Dimension(25, 25));
+//		color4.addActionListener(this);
+//		colorPanel.add(color4);
+//
+//		JButton color5 = new JButton();
+//		color5.setBackground(Color.MAGENTA);
+//		color5.setPreferredSize(new Dimension(25, 25));
+//		color5.addActionListener(this);
+//		colorPanel.add(color5);
 
 		sidePanel = new JPanel();
 		sidePanel.setLayout(new GridBagLayout());

@@ -10,6 +10,4 @@ public interface IGameField {
 	void setCell(int x, int y, Color color);
 	int getSize();
 	void setSize(int size);
-	int getColorNumber();
-	void setColorNumber(int num);
 }
